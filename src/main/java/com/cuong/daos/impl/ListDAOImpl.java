@@ -3,16 +3,17 @@ package com.cuong.daos.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.cuong.daos.ListDAO;
 import com.cuong.models.List;
 import com.cuong.utils.Constant;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ListDAOImpl implements ListDAO {
 
 	private DatabaseReference listsRef = FirebaseDatabase.getInstance().getReference().child(Constant.REF_LISTS);
+	private ChildEventListener childEventListener;
 
 	@Override
 	public List save(List list) {
@@ -29,6 +30,19 @@ public class ListDAOImpl implements ListDAO {
 		child.put(list.getId(), list);
 		listsRef.updateChildrenAsync(child);
 		return list;
+	}
+
+	@Override
+	public void addChildEventListener(ChildEventListener childEventListener) {
+		this.childEventListener = childEventListener;
+		listsRef.addChildEventListener(childEventListener);
+	}
+
+	@Override
+	public void removeChildEventListener() {
+		if (childEventListener != null) {
+			listsRef.removeEventListener(childEventListener);
+		}
 	}
 
 }

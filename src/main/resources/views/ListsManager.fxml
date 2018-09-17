@@ -5,8 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -21,10 +20,12 @@
    <center>
       <VBox prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <children>
-            <TableView VBox.vgrow="ALWAYS">
+            <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
+                <TableColumn fx:id="idColumn" prefWidth="187.0" text="ID" />
+                <TableColumn fx:id="nameColumn" prefWidth="264.0" text="Name" />
+                  <TableColumn fx:id="createdAtColumn" prefWidth="197.0" text="Created At" />
+                  <TableColumn fx:id="numberOfWordsColumn" minWidth="0.0" prefWidth="119.0" text="Number of Words" />
               </columns>
             </TableView>
          </children>

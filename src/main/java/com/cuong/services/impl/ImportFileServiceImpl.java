@@ -29,7 +29,6 @@ public class ImportFileServiceImpl implements ImportFileService {
 		try {
 			List list = new List();
 			list.setName(FilenameUtils.removeExtension(file.getName()));
-			listDAO.save(list);
 			Scanner scanner = new Scanner(file);
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine().trim();
@@ -46,9 +45,9 @@ public class ImportFileServiceImpl implements ImportFileService {
 					LOGGER.info("word: " + word);
 					wordDAO.save(word);
 					list.getWordIDs().add(word.getId());
-					listDAO.update(list);
 				}
 			}
+			listDAO.save(list);
 			scanner.close();
 		} catch (FileNotFoundException e) {
 			LOGGER.info(e.getMessage());

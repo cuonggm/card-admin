@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Logger;
 
-import com.cuong.controllers.ListManagerController;
+import com.cuong.controllers.ListsManagerController;
 import com.cuong.firebaselisteners.ChangeTitleValueEventListener;
 import com.cuong.utils.Constant;
 import com.cuong.utils.PathUtils;
@@ -27,7 +27,7 @@ public class App extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		initFirebase();
 		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LIST_MANAGER));
-		ListManagerController listManagerController = new ListManagerController();
+		ListsManagerController listManagerController = new ListsManagerController();
 		fxmlLoader.setController(listManagerController);
 		Parent root = fxmlLoader.load();
 		primaryStage.setScene(new Scene(root));
@@ -36,7 +36,7 @@ public class App extends Application {
 		DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child(Constant.KEY_APP_NAME);
 		ChangeTitleValueEventListener changeTitleValueEventListener = new ChangeTitleValueEventListener();
 		changeTitleValueEventListener.setPrimaryStage(primaryStage);
-		rootRef.addListenerForSingleValueEvent(changeTitleValueEventListener);
+		rootRef.addValueEventListener(changeTitleValueEventListener);
 	}
 
 	public void initFirebase() throws Exception {
