@@ -9,11 +9,17 @@ import com.cuong.utils.Constant;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ListDAOImpl implements ListDAO {
 
 	private DatabaseReference listsRef = FirebaseDatabase.getInstance().getReference().child(Constant.REF_LISTS);
 	private ChildEventListener childEventListener;
+
+	@Override
+	public void loadAll(String listId, ValueEventListener valueEventListener) {
+		listsRef.child(listId).addListenerForSingleValueEvent(valueEventListener);
+	}
 
 	@Override
 	public List save(List list) {
@@ -30,6 +36,12 @@ public class ListDAOImpl implements ListDAO {
 		child.put(list.getId(), list);
 		listsRef.updateChildrenAsync(child);
 		return list;
+	}
+
+	@Override
+	public boolean delete(String listId) {
+		listsRef.child(listId).removeValueAsync();
+		return true;
 	}
 
 	@Override

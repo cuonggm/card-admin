@@ -6,4 +6,6 @@ public interface WordDAO {
 
 	Word save(Word word);
 
+	boolean delete(String wordId);
+
 }

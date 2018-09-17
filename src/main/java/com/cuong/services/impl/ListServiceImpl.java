@@ -1,29 +1,86 @@
 package com.cuong.services.impl;
 
+import java.util.logging.Logger;
+
 import com.cuong.daos.ListDAO;
+import com.cuong.daos.WordDAO;
 import com.cuong.daos.impl.ListDAOImpl;
-import com.cuong.firebaselisteners.ListItemChildEventListener;
+import com.cuong.daos.impl.WordDAOImpl;
+import com.cuong.eventhandlers.ListItemEventHandler;
+import com.cuong.models.List;
 import com.cuong.services.ListService;
-import com.cuong.viewmodels.List;
-import javafx.scene.control.TableView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class ListServiceImpl implements ListService {
 
+	private static final Logger LOGGER = Logger.getLogger(ListServiceImpl.class.getName());
+
 	private ListDAO listDAO = new ListDAOImpl();
-	private ListItemChildEventListener listItemChildEventListener;
-	private TableView<List> tableView;
+	private WordDAO wordDAO = new WordDAOImpl();
 
 	@Override
-	public void bind(TableView<List> tableView) {
-		this.tableView = tableView;
-		listItemChildEventListener = new ListItemChildEventListener();
-		listItemChildEventListener.setTableView(this.tableView);
-		listDAO.addChildEventListener(listItemChildEventListener);
+	public void setListItemEventHandler(ListItemEventHandler handler) {
+		if (handler == null) {
+			LOGGER.severe("List Item Event Handler is null");
+			return;
+		}
+
+		listDAO.addChildEventListener(new ChildEventListener() {
+
+			@Override
+			public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+				handler.onListAdded(snapshot.getValue(List.class));
+			}
+
+			@Override
+			public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+				handler.onListChanged(snapshot.getValue(List.class));
+			}
+
+			@Override
+			public void onChildRemoved(DataSnapshot snapshot) {
+				handler.onListRemoved(snapshot.getValue(List.class));
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+				handler.onListMoved(snapshot.getValue(List.class));
+			}
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				handler.onListCancelled(error.getDetails());
+			}
+		});
 	}
 
 	@Override
-	public void unbind() {
+	public void removeListItemEventHandler() {
 		listDAO.removeChildEventListener();
+	}
+
+	@Override
+	public void delete(String listId) {
+		LOGGER.info("Delete ListID: " + listId);
+		listDAO.loadAll(listId, new ValueEventListener() {
+
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				List list = snapshot.getValue(List.class);
+				for (String wordId : list.getWordIDs()) {
+					wordDAO.delete(wordId);
+				}
+				listDAO.delete(listId);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				LOGGER.severe(error.getDetails());
+			}
+		});
 	}
 
 }

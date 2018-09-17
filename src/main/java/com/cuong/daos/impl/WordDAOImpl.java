@@ -21,4 +21,10 @@ public class WordDAOImpl implements WordDAO {
 		return word;
 	}
 
+	@Override
+	public boolean delete(String wordId) {
+		wordsRef.child(wordId).removeValueAsync();
+		return true;
+	}
+
 }

@@ -3,16 +3,17 @@ package com.cuong;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Logger;
-
 import com.cuong.controllers.ListsManagerController;
-import com.cuong.firebaselisteners.ChangeTitleValueEventListener;
 import com.cuong.utils.Constant;
 import com.cuong.utils.PathUtils;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		LOGGER.info("Init Firebase");
 		initFirebase();
 		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LIST_MANAGER));
 		ListsManagerController listManagerController = new ListsManagerController();
@@ -33,10 +35,19 @@ public class App extends Application {
 		primaryStage.setScene(new Scene(root));
 		primaryStage.setTitle(Constant.TITLE_INIT);
 		primaryStage.show();
-		DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().child(Constant.KEY_APP_NAME);
-		ChangeTitleValueEventListener changeTitleValueEventListener = new ChangeTitleValueEventListener();
-		changeTitleValueEventListener.setPrimaryStage(primaryStage);
-		rootRef.addValueEventListener(changeTitleValueEventListener);
+		DatabaseReference appNameRef = FirebaseDatabase.getInstance().getReference().child(Constant.KEY_APP_NAME);
+		appNameRef.addValueEventListener(new ValueEventListener() {
+
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				primaryStage.setTitle(snapshot.getValue(String.class));
+			}
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				LOGGER.info("onCancelled");
+			}
+		});
 	}
 
 	public void initFirebase() throws Exception {
