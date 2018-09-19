@@ -63,6 +63,11 @@ public class ListServiceImpl implements ListService {
 	}
 
 	@Override
+	public void save(List list) {
+		listDAO.save(list);
+	}
+
+	@Override
 	public void delete(String listId) {
 		LOGGER.info("Delete ListID: " + listId);
 		listDAO.loadAll(listId, new ValueEventListener() {

@@ -1,6 +1,7 @@
 package com.cuong.controllers;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -14,13 +15,17 @@ import com.cuong.services.ListService;
 import com.cuong.services.impl.ImportFileServiceImpl;
 import com.cuong.services.impl.ListServiceImpl;
 import com.cuong.utils.Constant;
+import com.cuong.utils.PathUtils;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -55,6 +60,25 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 			@Override
 			public void handle(ActionEvent event) {
 				deleteSelectedLists();
+			}
+		});
+
+		addButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+
+				try {
+					FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_ADD_NEW_LIST));
+					AddNewListController addNewListController = new AddNewListController();
+					fxmlLoader.setController(addNewListController);
+					Parent root = fxmlLoader.load();
+					Stage stage = new Stage();
+					stage.setScene(new Scene(root));
+					stage.setTitle(Constant.TITLE_ADD_NEW_LIST);
+					stage.show();
+				} catch (IOException e) {
+					LOGGER.severe(e.getMessage());
+				}
 			}
 		});
 	}
@@ -102,6 +126,9 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 
 	@FXML
 	private Button deleteButton;
+
+	@FXML
+	private Button addButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

@@ -1,17 +1,25 @@
 package com.cuong.daos.impl;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.logging.Logger;
 import com.cuong.daos.ListDAO;
+import com.cuong.modelconverters.ListConverter;
 import com.cuong.models.List;
 import com.cuong.utils.Constant;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Transaction.Handler;
+import com.google.firebase.database.Transaction.Result;
 
 public class ListDAOImpl implements ListDAO {
+
+	private static final Logger LOGGER = Logger.getLogger(ListDAOImpl.class.getName());
 
 	private DatabaseReference listsRef = FirebaseDatabase.getInstance().getReference().child(Constant.REF_LISTS);
 	private ChildEventListener childEventListener;
@@ -32,9 +40,27 @@ public class ListDAOImpl implements ListDAO {
 
 	@Override
 	public List update(List list) {
-		Map<String, Object> child = new HashMap<>();
-		child.put(list.getId(), list);
-		listsRef.updateChildrenAsync(child);
+		listsRef.child(list.getId()).runTransaction(new Handler() {
+
+			@Override
+			public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+				if (error != null) {
+					LOGGER.severe(error.getDetails());
+				} else {
+					LOGGER.info("List update complete");
+				}
+			}
+
+			@Override
+			public Result doTransaction(MutableData currentData) {
+				if (currentData == null) {
+					return Transaction.success(currentData);
+				}
+				List currentList = currentData.getValue(List.class);
+				ListConverter.copy(currentList, list);
+				return Transaction.success(currentData);
+			}
+		});
 		return list;
 	}
 

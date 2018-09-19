@@ -15,6 +15,8 @@ public class Constant {
 	public static final String PROPERTY_LIST_NAME = "name";
 	public static final String PROPERTY_LIST_CREATED_AT = "createdAt";
 	public static final String PROPERTY_LIST_NUMBER_OF_WORDS = "numberOfWords";
+	public static final String TITLE_ADD_NEW_LIST = "Add new list";
+	public static final String VIEW_ADD_NEW_LIST = "AddNewList.fxml";
 
 	private Constant() {
 

@@ -24,4 +24,11 @@ public class ListConverter {
 		return model;
 	}
 
+	public static void copy(com.cuong.models.List destination, com.cuong.models.List source) {
+		destination.setId(source.getId());
+		destination.setName(source.getName());
+		destination.setCreatedAt(source.getCreatedAt());
+		destination.setWordIDs(source.getWordIDs());
+	}
+
 }
