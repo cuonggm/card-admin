@@ -81,6 +81,30 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 				}
 			}
 		});
+
+		showButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				ObservableList<com.cuong.viewmodels.List> lists = tableView.getSelectionModel().getSelectedItems();
+				if (lists != null) {
+					for (com.cuong.viewmodels.List list : lists) {
+						try {
+							FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LIST_MANAGER));
+							ListManagerController listManagerController = new ListManagerController();
+							listManagerController.setListId(list.getId());
+							fxmlLoader.setController(listManagerController);
+							Parent root = fxmlLoader.load();
+							Stage stage = new Stage();
+							stage.setScene(new Scene(root));
+							stage.setTitle(list.getName());
+							stage.show();
+						} catch (IOException e) {
+							LOGGER.severe(e.getMessage());
+						}
+					}
+				}
+			}
+		});
 	}
 
 	private void deleteSelectedLists() {
@@ -129,6 +153,9 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 
 	@FXML
 	private Button addButton;
+
+	@FXML
+	private Button showButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

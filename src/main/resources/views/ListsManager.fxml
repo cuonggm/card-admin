@@ -36,6 +36,7 @@
       <HBox alignment="CENTER_RIGHT" spacing="10.0">
          <children>
             <Button fx:id="addButton" mnemonicParsing="false" text="Add List" />
+            <Button fx:id="showButton" mnemonicParsing="false" text="Show Detail" />
             <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete selected list" />
          </children>

@@ -28,7 +28,7 @@ public class App extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		LOGGER.info("Init Firebase");
 		initFirebase();
-		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LIST_MANAGER));
+		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LISTS_MANAGER));
 		ListsManagerController listManagerController = new ListsManagerController();
 		fxmlLoader.setController(listManagerController);
 		Parent root = fxmlLoader.load();
