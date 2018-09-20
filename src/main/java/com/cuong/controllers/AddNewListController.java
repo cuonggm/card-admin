@@ -35,17 +35,14 @@ public class AddNewListController implements Initializable {
 
 					@Override
 					public void onSuccess(List object) {
-						// TODO Auto-generated method stub
-
+						close();
 					}
 
 					@Override
 					public void onError(String error) {
-						// TODO Auto-generated method stub
-
+						LOGGER.severe(error);
 					}
 				});
-				close();
 			}
 		});
 	}

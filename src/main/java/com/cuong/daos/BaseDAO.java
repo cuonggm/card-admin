@@ -1,14 +1,16 @@
 package com.cuong.daos;
 
 import java.util.List;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.ValueEventListener;
 
 public interface BaseDAO<ID, T> {
 
-	void listenAll(OnComplete<T> onComplete);
+	void listenAll(ChildEventListener childEventListener);
 
 	void removeListenAll();
 
-	void listen(ID id, OnComplete<T> onComplete);
+	void listen(ID id, ValueEventListener valueEventListener);
 
 	void removeListen(ID id);
 

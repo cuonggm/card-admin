@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import com.cuong.daos.OnComplete;
-import com.cuong.eventhandlers.ListItemEventHandler;
+import com.cuong.eventhandlers.EntityEventHandler;
 import com.cuong.modelconverters.ListConverter;
 import com.cuong.services.ImportFileService;
 import com.cuong.services.ListService;
@@ -36,7 +36,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
-public class ListsManagerController implements Initializable, ListItemEventHandler {
+public class ListsManagerController implements Initializable, EntityEventHandler<com.cuong.models.List> {
 
 	private static final Logger LOGGER = Logger.getLogger(ListsManagerController.class.getName());
 
@@ -116,14 +116,12 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 
 					@Override
 					public void onSuccess(com.cuong.models.List object) {
-						// TODO Auto-generated method stub
-
+						LOGGER.info("Deleted list: " + object.getName());
 					}
 
 					@Override
 					public void onError(String error) {
-						// TODO Auto-generated method stub
-
+						LOGGER.severe("Cannot delete list: " + error);
 					}
 				});
 			}
@@ -183,7 +181,7 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 	}
 
 	@Override
-	public void onListAdded(com.cuong.models.List list) {
+	public void onEntityAdded(com.cuong.models.List list) {
 		LOGGER.info("Added list item");
 		com.cuong.viewmodels.List listViewModel = ListConverter.getViewModel(list);
 		Platform.runLater(new Runnable() {
@@ -195,12 +193,12 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 	}
 
 	@Override
-	public void onListChanged(com.cuong.models.List list) {
+	public void onEntityChanged(com.cuong.models.List list) {
 		LOGGER.info("Changed list item");
 	}
 
 	@Override
-	public void onListRemoved(com.cuong.models.List list) {
+	public void onEntityRemoved(com.cuong.models.List list) {
 		LOGGER.info("Removed list item");
 		for (com.cuong.viewmodels.List currentList : tableView.getItems()) {
 			if (currentList.getId().equals(list.getId())) {
@@ -215,12 +213,12 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 	}
 
 	@Override
-	public void onListMoved(com.cuong.models.List list) {
+	public void onEntityMoved(com.cuong.models.List list) {
 		LOGGER.info("Moved list item");
 	}
 
 	@Override
-	public void onListCancelled(String error) {
+	public void onEntityCancelled(String error) {
 		LOGGER.info("Cancelled list item");
 	}
 

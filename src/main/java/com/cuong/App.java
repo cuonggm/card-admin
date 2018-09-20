@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -40,7 +41,14 @@ public class App extends Application {
 
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				primaryStage.setTitle(snapshot.getValue(String.class));
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+						primaryStage.setTitle(snapshot.getValue(String.class));
+					}
+				});
+
 			}
 
 			@Override

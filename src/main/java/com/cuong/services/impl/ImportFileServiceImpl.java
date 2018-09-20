@@ -43,11 +43,11 @@ public class ImportFileServiceImpl implements ImportFileService {
 					line = scanner.nextLine().trim();
 					word.setAmHanViet(line);
 					LOGGER.info("word: " + word);
-					wordDAO.save(word);
+					wordDAO.save(word, null);
 					list.getWordIDs().add(word.getId());
 				}
 			}
-			listDAO.save(list);
+			listDAO.save(list, null);
 			scanner.close();
 		} catch (FileNotFoundException e) {
 			LOGGER.info(e.getMessage());
