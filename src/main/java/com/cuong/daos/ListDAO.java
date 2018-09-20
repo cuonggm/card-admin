@@ -6,13 +6,13 @@ import com.google.firebase.database.ValueEventListener;
 
 public interface ListDAO {
 
-	void loadAll(String listId, ValueEventListener valueEventListener);
+	void load(String listId, ValueEventListener valueEventListener);
 
 	List save(List list);
 
 	List update(List list);
 
-	boolean delete(String listId);
+	void delete(String listId, OnComplete<List> onComplete);
 
 	void addChildEventListener(ChildEventListener childEventListener);
 

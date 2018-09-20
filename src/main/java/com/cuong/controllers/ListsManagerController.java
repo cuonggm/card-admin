@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import com.cuong.daos.OnComplete;
 import com.cuong.eventhandlers.ListItemEventHandler;
 import com.cuong.modelconverters.ListConverter;
 import com.cuong.services.ImportFileService;
 import com.cuong.services.ListService;
 import com.cuong.services.impl.ImportFileServiceImpl;
 import com.cuong.services.impl.ListServiceImpl;
-import com.cuong.utils.Constant;
+import com.cuong.utils.C;
 import com.cuong.utils.PathUtils;
 
 import javafx.application.Platform;
@@ -42,10 +43,10 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 	private ListService listService = new ListServiceImpl();
 
 	private void setupTableView() {
-		idColumn.setCellValueFactory(new PropertyValueFactory<>(Constant.PROPERTY_LIST_ID));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>(Constant.PROPERTY_LIST_NAME));
-		createdAtColumn.setCellValueFactory(new PropertyValueFactory<>(Constant.PROPERTY_LIST_CREATED_AT));
-		numberOfWordsColumn.setCellValueFactory(new PropertyValueFactory<>(Constant.PROPERTY_LIST_NUMBER_OF_WORDS));
+		idColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.ID));
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.NAME));
+		createdAtColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.CREATED_AT));
+		numberOfWordsColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.NUMBER_OF_WORDS));
 	}
 
 	private void setupEvents() {
@@ -68,13 +69,13 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 			public void handle(ActionEvent event) {
 
 				try {
-					FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_ADD_NEW_LIST));
+					FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.ADD_NEW_LIST));
 					AddNewListController addNewListController = new AddNewListController();
 					fxmlLoader.setController(addNewListController);
 					Parent root = fxmlLoader.load();
 					Stage stage = new Stage();
 					stage.setScene(new Scene(root));
-					stage.setTitle(Constant.TITLE_ADD_NEW_LIST);
+					stage.setTitle(C.Title.ADD_NEW_LIST);
 					stage.show();
 				} catch (IOException e) {
 					LOGGER.severe(e.getMessage());
@@ -89,7 +90,7 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 				if (lists != null) {
 					for (com.cuong.viewmodels.List list : lists) {
 						try {
-							FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LIST_MANAGER));
+							FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LIST_MANAGER));
 							ListManagerController listManagerController = new ListManagerController();
 							listManagerController.setListId(list.getId());
 							fxmlLoader.setController(listManagerController);
@@ -111,16 +112,28 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 		ObservableList<com.cuong.viewmodels.List> selectedItems = tableView.getSelectionModel().getSelectedItems();
 		if (selectedItems != null) {
 			for (com.cuong.viewmodels.List list : selectedItems) {
-				listService.delete(list.getId());
+				listService.delete(list.getId(), new OnComplete<com.cuong.models.List>() {
+
+					@Override
+					public void onSuccess(com.cuong.models.List object) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 			}
 		}
 	}
 
 	private void importFile() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters()
-				.add(new ExtensionFilter(Constant.TITLE_TEXT_FILE, Constant.EXTENSION_TEXT_FILE));
-		fileChooser.setTitle(Constant.TITLE_CHOOSE_IMPORT_FILE);
+		fileChooser.getExtensionFilters().add(new ExtensionFilter(C.Title.TEXT_FILE, C.FileExtension.TEXT_FILE));
+		fileChooser.setTitle(C.Title.CHOOSE_IMPORT_FILE);
 		List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
 		ImportFileService importFileService = new ImportFileServiceImpl();
 		if (files != null) {
@@ -166,7 +179,7 @@ public class ListsManagerController implements Initializable, ListItemEventHandl
 		setupEvents();
 
 		// bind data to UI
-		listService.setListItemEventHandler(this);
+		listService.setItemEventHandler(this);
 	}
 
 	@Override

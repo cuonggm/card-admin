@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Logger;
 import com.cuong.controllers.ListsManagerController;
-import com.cuong.utils.Constant;
+import com.cuong.utils.C;
 import com.cuong.utils.PathUtils;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -28,14 +28,14 @@ public class App extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		LOGGER.info("Init Firebase");
 		initFirebase();
-		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(Constant.VIEW_LISTS_MANAGER));
+		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LISTS_MANAGER));
 		ListsManagerController listManagerController = new ListsManagerController();
 		fxmlLoader.setController(listManagerController);
 		Parent root = fxmlLoader.load();
 		primaryStage.setScene(new Scene(root));
-		primaryStage.setTitle(Constant.TITLE_INIT);
+		primaryStage.setTitle(C.Title.INIT);
 		primaryStage.show();
-		DatabaseReference appNameRef = FirebaseDatabase.getInstance().getReference().child(Constant.KEY_APP_NAME);
+		DatabaseReference appNameRef = FirebaseDatabase.getInstance().getReference().child(C.Ref.APP_NAME);
 		appNameRef.addValueEventListener(new ValueEventListener() {
 
 			@Override

@@ -2,7 +2,9 @@ package com.cuong.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
+import com.cuong.daos.OnComplete;
 import com.cuong.models.List;
 import com.cuong.services.ListService;
 import com.cuong.services.impl.ListServiceImpl;
@@ -16,6 +18,8 @@ import javafx.stage.Stage;
 
 public class AddNewListController implements Initializable {
 
+	private static final Logger LOGGER = Logger.getLogger(AddNewListController.class.getName());
+
 	private ListService listService = new ListServiceImpl();
 
 	private void setupEvents() {
@@ -27,7 +31,20 @@ public class AddNewListController implements Initializable {
 				}
 				List list = new List();
 				list.setName(nameField.getText());
-				listService.save(list);
+				listService.save(list, new OnComplete<List>() {
+
+					@Override
+					public void onSuccess(List object) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 				close();
 			}
 		});

@@ -14,7 +14,7 @@ import com.cuong.daos.impl.WordDAOImpl;
 import com.cuong.models.List;
 import com.cuong.models.Word;
 import com.cuong.services.ImportFileService;
-import com.cuong.utils.Constant;
+import com.cuong.utils.C;
 
 public class ImportFileServiceImpl implements ImportFileService {
 
@@ -32,7 +32,7 @@ public class ImportFileServiceImpl implements ImportFileService {
 			Scanner scanner = new Scanner(file);
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine().trim();
-				if (line.equals(Constant.MARK_BEGIN)) {
+				if (line.equals(C.Mark.BEGIN)) {
 					Word word = new Word();
 					line = scanner.nextLine().trim();
 					word.setKanji(line);

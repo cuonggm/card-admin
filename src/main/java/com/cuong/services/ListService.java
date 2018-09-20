@@ -1,16 +1,17 @@
 package com.cuong.services;
 
+import com.cuong.daos.OnComplete;
 import com.cuong.eventhandlers.ListItemEventHandler;
 import com.cuong.models.List;
 
 public interface ListService {
 
-	void setListItemEventHandler(ListItemEventHandler handler);
+	void setItemEventHandler(ListItemEventHandler handler);
 
-	void removeListItemEventHandler();
+	void removeItemEventHandler();
 
-	void save(List list);
+	void save(List list, OnComplete<List> onComplete);
 
-	void delete(String listId);
+	void delete(String listId, OnComplete<List> onComplete);
 
 }

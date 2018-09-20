@@ -3,13 +3,15 @@ package com.cuong.daos.impl;
 import java.util.Date;
 import java.util.logging.Logger;
 import com.cuong.daos.ListDAO;
+import com.cuong.daos.OnComplete;
 import com.cuong.modelconverters.ListConverter;
 import com.cuong.models.List;
-import com.cuong.utils.Constant;
+import com.cuong.utils.C;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
@@ -21,11 +23,11 @@ public class ListDAOImpl implements ListDAO {
 
 	private static final Logger LOGGER = Logger.getLogger(ListDAOImpl.class.getName());
 
-	private DatabaseReference listsRef = FirebaseDatabase.getInstance().getReference().child(Constant.REF_LISTS);
+	private DatabaseReference listsRef = FirebaseDatabase.getInstance().getReference().child(C.Ref.LISTS);
 	private ChildEventListener childEventListener;
 
 	@Override
-	public void loadAll(String listId, ValueEventListener valueEventListener) {
+	public void load(String listId, ValueEventListener valueEventListener) {
 		listsRef.child(listId).addListenerForSingleValueEvent(valueEventListener);
 	}
 
@@ -41,7 +43,6 @@ public class ListDAOImpl implements ListDAO {
 	@Override
 	public List update(List list) {
 		listsRef.child(list.getId()).runTransaction(new Handler() {
-
 			@Override
 			public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
 				if (error != null) {
@@ -65,9 +66,17 @@ public class ListDAOImpl implements ListDAO {
 	}
 
 	@Override
-	public boolean delete(String listId) {
-		listsRef.child(listId).removeValueAsync();
-		return true;
+	public void delete(String listId, OnComplete<List> onComplete) {
+		listsRef.child(listId).removeValue(new CompletionListener() {
+			@Override
+			public void onComplete(DatabaseError error, DatabaseReference ref) {
+				if (error == null) {
+					onComplete.onSuccess(new List());
+				} else {
+					onComplete.onError(error.getMessage());
+				}
+			}
+		});
 	}
 
 	@Override

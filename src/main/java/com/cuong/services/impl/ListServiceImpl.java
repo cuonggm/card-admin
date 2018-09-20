@@ -3,6 +3,7 @@ package com.cuong.services.impl;
 import java.util.logging.Logger;
 
 import com.cuong.daos.ListDAO;
+import com.cuong.daos.OnComplete;
 import com.cuong.daos.WordDAO;
 import com.cuong.daos.impl.ListDAOImpl;
 import com.cuong.daos.impl.WordDAOImpl;
@@ -22,7 +23,7 @@ public class ListServiceImpl implements ListService {
 	private WordDAO wordDAO = new WordDAOImpl();
 
 	@Override
-	public void setListItemEventHandler(ListItemEventHandler handler) {
+	public void setItemEventHandler(ListItemEventHandler handler) {
 		if (handler == null) {
 			LOGGER.severe("List Item Event Handler is null");
 			return;
@@ -58,19 +59,19 @@ public class ListServiceImpl implements ListService {
 	}
 
 	@Override
-	public void removeListItemEventHandler() {
+	public void removeItemEventHandler() {
 		listDAO.removeChildEventListener();
 	}
 
 	@Override
-	public void save(List list) {
+	public void save(List list, OnComplete<List> onComplete) {
 		listDAO.save(list);
 	}
 
 	@Override
-	public void delete(String listId) {
+	public void delete(String listId, OnComplete<List> onComplete) {
 		LOGGER.info("Delete ListID: " + listId);
-		listDAO.loadAll(listId, new ValueEventListener() {
+		listDAO.load(listId, new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
@@ -78,7 +79,7 @@ public class ListServiceImpl implements ListService {
 				for (String wordId : list.getWordIDs()) {
 					wordDAO.delete(wordId);
 				}
-				listDAO.delete(listId);
+				listDAO.delete(listId, onComplete);
 			}
 
 			@Override
