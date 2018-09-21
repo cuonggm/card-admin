@@ -3,7 +3,6 @@ package com.cuong.controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
 import com.cuong.daos.OnComplete;
 import com.cuong.models.List;
 import com.cuong.services.ListService;
@@ -35,7 +34,13 @@ public class AddNewListController implements Initializable {
 
 					@Override
 					public void onSuccess(List object) {
-						close();
+						javafx.application.Platform.runLater(new Runnable() {
+
+							@Override
+							public void run() {
+								close();
+							}
+						});
 					}
 
 					@Override

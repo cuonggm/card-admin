@@ -26,10 +26,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.util.Callback;
 import javafx.stage.Stage;
 
 public class ListsManagerController implements Initializable, EntityEventHandler<com.cuong.models.List> {
@@ -43,6 +46,25 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.NAME));
 		createdAtColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.CREATED_AT));
 		numberOfWordsColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.NUMBER_OF_WORDS));
+		tableView.setRowFactory(
+				new Callback<TableView<com.cuong.viewmodels.List>, TableRow<com.cuong.viewmodels.List>>() {
+
+					@Override
+					public TableRow<com.cuong.viewmodels.List> call(TableView<com.cuong.viewmodels.List> param) {
+						TableRow<com.cuong.viewmodels.List> tableRow = new TableRow<>();
+						tableRow.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+							@Override
+							public void handle(MouseEvent event) {
+								if (event.getClickCount() == 2) {
+									com.cuong.viewmodels.List list = tableRow.getItem();
+									showListDetail(list);
+								}
+							}
+						});
+						return tableRow;
+					}
+				});
 	}
 
 	private void setupEvents() {
@@ -78,30 +100,22 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 				}
 			}
 		});
+	}
 
-		showButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				ObservableList<com.cuong.viewmodels.List> lists = tableView.getSelectionModel().getSelectedItems();
-				if (lists != null) {
-					for (com.cuong.viewmodels.List list : lists) {
-						try {
-							FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LIST_MANAGER));
-							ListManagerController listManagerController = new ListManagerController();
-							listManagerController.setListId(list.getId());
-							fxmlLoader.setController(listManagerController);
-							Parent root = fxmlLoader.load();
-							Stage stage = new Stage();
-							stage.setScene(new Scene(root));
-							stage.setTitle(list.getName());
-							stage.show();
-						} catch (IOException e) {
-							LOGGER.severe(e.getMessage());
-						}
-					}
-				}
-			}
-		});
+	private void showListDetail(com.cuong.viewmodels.List list) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LIST_MANAGER));
+			ListManagerController listManagerController = new ListManagerController();
+			listManagerController.setListId(list.getId());
+			fxmlLoader.setController(listManagerController);
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.setScene(new Scene(root));
+			stage.setTitle(list.getName());
+			stage.show();
+		} catch (IOException e) {
+			LOGGER.severe(e.getMessage());
+		}
 	}
 
 	private void deleteSelectedLists() {
@@ -160,9 +174,6 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 
 	@FXML
 	private Button addButton;
-
-	@FXML
-	private Button showButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
