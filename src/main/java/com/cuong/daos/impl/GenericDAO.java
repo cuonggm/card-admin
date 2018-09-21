@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.cuong.daos.OnComplete;
+import com.cuong.eventhandlers.EntityChangeEventHandler;
+import com.cuong.eventhandlers.EntityEventHandler;
 import com.cuong.models.BaseManageable;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -44,8 +46,39 @@ public abstract class GenericDAO<ID, T extends BaseManageable<T>> {
 		return valueEventListeners;
 	}
 
-	public void listenAll(ChildEventListener childEventListener) {
+	public void listenAll(EntityEventHandler<T> entityEventHandler) {
 		removeListenAll();
+		ChildEventListener childEventListener = new ChildEventListener() {
+
+			@Override
+			public void onChildRemoved(DataSnapshot snapshot) {
+				T entity = snapshot.getValue(getModelClass());
+				entityEventHandler.onEntityRemoved(entity);
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+				T entity = snapshot.getValue(getModelClass());
+				entityEventHandler.onEntityMoved(entity);
+			}
+
+			@Override
+			public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+				T entity = snapshot.getValue(getModelClass());
+				entityEventHandler.onEntityChanged(entity);
+			}
+
+			@Override
+			public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+				T entity = snapshot.getValue(getModelClass());
+				entityEventHandler.onEntityAdded(entity);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				entityEventHandler.onEntityCancelled(error.getMessage());
+			}
+		};
 		getChildEventListeners().put(ROOT_KEY, childEventListener);
 		getRootRef().addChildEventListener(childEventListener);
 	}
@@ -57,7 +90,20 @@ public abstract class GenericDAO<ID, T extends BaseManageable<T>> {
 		}
 	}
 
-	public void listen(String id, ValueEventListener valueEventListener) {
+	public void listen(String id, EntityChangeEventHandler<T> entityChangeEventHandler) {
+		ValueEventListener valueEventListener = new ValueEventListener() {
+
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				T entity = snapshot.getValue(getModelClass());
+				entityChangeEventHandler.onEntityChange(entity);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				entityChangeEventHandler.onCancelled(error.getMessage());
+			}
+		};
 		getValueEventListeners().put(id, valueEventListener);
 		getRootRef().child(id).addValueEventListener(valueEventListener);
 	}

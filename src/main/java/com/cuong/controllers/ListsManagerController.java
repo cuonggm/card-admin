@@ -7,17 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
 import com.cuong.daos.OnComplete;
 import com.cuong.eventhandlers.EntityEventHandler;
 import com.cuong.modelconverters.ListConverter;
-import com.cuong.services.ImportFileService;
 import com.cuong.services.ListService;
-import com.cuong.services.impl.ImportFileServiceImpl;
 import com.cuong.services.impl.ListServiceImpl;
 import com.cuong.utils.C;
 import com.cuong.utils.PathUtils;
-
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -112,7 +108,7 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 		ObservableList<com.cuong.viewmodels.List> selectedItems = tableView.getSelectionModel().getSelectedItems();
 		if (selectedItems != null) {
 			for (com.cuong.viewmodels.List list : selectedItems) {
-				listService.delete(list.getId(), new OnComplete<com.cuong.models.List>() {
+				listService.deleteCascade(list.getId(), new OnComplete<com.cuong.models.List>() {
 
 					@Override
 					public void onSuccess(com.cuong.models.List object) {
@@ -133,10 +129,10 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 		fileChooser.getExtensionFilters().add(new ExtensionFilter(C.Title.TEXT_FILE, C.FileExtension.TEXT_FILE));
 		fileChooser.setTitle(C.Title.CHOOSE_IMPORT_FILE);
 		List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
-		ImportFileService importFileService = new ImportFileServiceImpl();
+		ListService listService = new ListServiceImpl();
 		if (files != null) {
 			for (File file : files) {
-				importFileService.importFromFile(file);
+				listService.importTextFile(file);
 			}
 		}
 	}
@@ -177,7 +173,7 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 		setupEvents();
 
 		// bind data to UI
-		listService.setItemEventHandler(this);
+		listService.listenAll(this);
 	}
 
 	@Override

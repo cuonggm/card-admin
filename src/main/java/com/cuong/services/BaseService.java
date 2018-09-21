@@ -1,10 +1,12 @@
-package com.cuong.daos;
+package com.cuong.services;
 
 import java.util.List;
+
+import com.cuong.daos.OnComplete;
 import com.cuong.eventhandlers.EntityChangeEventHandler;
 import com.cuong.eventhandlers.EntityEventHandler;
 
-public interface BaseDAO<ID, T> {
+public interface BaseService<ID, T> {
 
 	void listenAll(EntityEventHandler<T> entityEventHandler);
 

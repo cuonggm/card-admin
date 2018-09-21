@@ -1,17 +1,14 @@
 package com.cuong.services;
 
+import java.io.File;
+
 import com.cuong.daos.OnComplete;
-import com.cuong.eventhandlers.EntityEventHandler;
 import com.cuong.models.List;
 
-public interface ListService {
+public interface ListService extends BaseService<String, List> {
 
-	void setItemEventHandler(EntityEventHandler<List> handler);
+	void importTextFile(File file);
 
-	void removeItemEventHandler();
-
-	void save(List list, OnComplete<List> onComplete);
-
-	void delete(String listId, OnComplete<List> onComplete);
+	void deleteCascade(String id, OnComplete<List> onComplete);
 
 }
