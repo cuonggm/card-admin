@@ -4,10 +4,6 @@ import java.net.URL;
 
 public class PathUtils {
 
-	public static URL getConfigFile(String fileName) {
-		return getPath("/config/" + fileName);
-	}
-
 	public static URL getViewFile(String viewName) {
 		return getPath("/views/" + viewName);
 	}

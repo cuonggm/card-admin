@@ -28,6 +28,7 @@ public class AddNewListController implements Initializable {
 				if (nameField.getText().isEmpty()) {
 					return;
 				}
+				addButton.setDisable(true);
 				List list = new List();
 				list.setName(nameField.getText());
 				listService.save(list, new OnComplete<List>() {

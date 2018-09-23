@@ -59,8 +59,9 @@ public class App extends Application {
 	}
 
 	public void initFirebase() throws Exception {
-		FileInputStream serviceAccount = new FileInputStream(
-				new File(PathUtils.getConfigFile("card-admin.json").toURI()));
+		String projectPath = System.getProperty("user.dir");
+		String configPath = projectPath + "/card-admin.json";
+		FileInputStream serviceAccount = new FileInputStream(new File(configPath));
 		FirebaseOptions options = new FirebaseOptions.Builder()
 				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
 				.setDatabaseUrl("https://card-29987.firebaseio.com").build();
