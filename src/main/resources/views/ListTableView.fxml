@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.TableView?>
+
+<TableView fx:id="tableView" prefHeight="500.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <columns>
+      <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+      <TableColumn fx:id="nameColumn" prefWidth="277.0" text="Name" />
+      <TableColumn fx:id="createdAtColumn" prefWidth="247.0" text="Created At" />
+      <TableColumn fx:id="updatedAtColumn" prefWidth="225.0" text="Updated At" />
+      <TableColumn fx:id="numberOfWordsColumn" prefWidth="136.0" text="Number of Words" />
+      <TableColumn fx:id="showWordsColumn" prefWidth="122.0" text="Show Words" />
+      <TableColumn fx:id="deleteColumn" prefWidth="117.0" text="Delete" />
+   </columns>
+</TableView>

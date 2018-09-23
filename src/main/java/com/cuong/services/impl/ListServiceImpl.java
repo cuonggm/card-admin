@@ -73,4 +73,9 @@ public class ListServiceImpl extends GenericService<String, List> implements Lis
 		}
 	}
 
+	@Override
+	public void updateName(String id, String name, OnComplete<List> onComplete) {
+		listDAO.updateName(id, name, onComplete);
+	}
+
 }

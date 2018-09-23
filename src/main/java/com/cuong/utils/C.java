@@ -7,6 +7,7 @@ public class C {
 		public static final String LISTS_MANAGER = "ListsManager.fxml";
 		public static final String ADD_NEW_LIST = "AddNewList.fxml";
 		public static final String LIST_MANAGER = "ListManager.fxml";
+		public static final String LIST_TABLE_VIEW = "ListTableView.fxml";
 
 	}
 
@@ -25,6 +26,8 @@ public class C {
 		public static final String TEXT_FILE = "Text file";
 		public static final String ADD_NEW_LIST = "Add new list";
 		public static final String LIST_DETAIL = "List Detail";
+		public static final String SHOW_WORDS = "Show words";
+		public static final String DELETE = "Delete";
 
 	}
 
@@ -34,12 +37,25 @@ public class C {
 
 	}
 
+	public static class ModelProperty {
+
+		public static class List {
+			public static final String ID = "id";
+			public static final String NAME = "name";
+			public static final String CREATED_AT = "createdAt";
+			public static final String UPDATED_AT = "updatedAt";
+			public static final String WORD_IDS = "wordIDs";
+		}
+
+	}
+
 	public static class ViewModelProperty {
 
 		public static class List {
 			public static final String ID = "id";
 			public static final String NAME = "name";
 			public static final String CREATED_AT = "createdAt";
+			public static final String UPDATED_AT = "updatedAt";
 			public static final String NUMBER_OF_WORDS = "numberOfWords";
 		}
 

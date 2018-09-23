@@ -6,42 +6,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="borderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="Import">
             <items>
-              <MenuItem fx:id="menuItemImportFile" mnemonicParsing="false" text="From file" />
+              <MenuItem fx:id="importFileMenuItem" mnemonicParsing="false" text="From file" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+              <items>
+                <MenuItem fx:id="addNewListMenuItem" mnemonicParsing="false" text="Add New List" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
-   <center>
-      <VBox prefHeight="700.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
-         <children>
-            <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
-              <columns>
-                <TableColumn fx:id="idColumn" prefWidth="187.0" text="ID" />
-                <TableColumn fx:id="nameColumn" prefWidth="264.0" text="Name" />
-                  <TableColumn fx:id="createdAtColumn" prefWidth="197.0" text="Created At" />
-                  <TableColumn fx:id="numberOfWordsColumn" minWidth="0.0" prefWidth="119.0" text="Number of Words" />
-              </columns>
-            </TableView>
-         </children>
-      </VBox>
-   </center>
-   <bottom>
-      <HBox alignment="CENTER_RIGHT" spacing="10.0">
-         <children>
-            <Button fx:id="addButton" mnemonicParsing="false" text="Add List" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="deleteButton" mnemonicParsing="false" text="Delete selected list" />
-         </children>
-         <padding>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </padding>
-      </HBox>
-   </bottom>
 </BorderPane>

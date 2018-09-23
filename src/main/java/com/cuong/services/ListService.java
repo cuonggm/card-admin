@@ -11,4 +11,6 @@ public interface ListService extends BaseService<String, List> {
 
 	void deleteCascade(String id, OnComplete<List> onComplete);
 
+	void updateName(String id, String name, OnComplete<List> onComplete);
+
 }

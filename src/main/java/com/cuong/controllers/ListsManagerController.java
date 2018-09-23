@@ -3,19 +3,17 @@ package com.cuong.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-import com.cuong.daos.OnComplete;
 import com.cuong.eventhandlers.EntityEventHandler;
+import com.cuong.listeners.ListTableViewEventListener;
 import com.cuong.modelconverters.ListConverter;
 import com.cuong.services.ListService;
 import com.cuong.services.impl.ListServiceImpl;
 import com.cuong.utils.C;
 import com.cuong.utils.PathUtils;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,66 +21,44 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Callback;
 import javafx.stage.Stage;
 
-public class ListsManagerController implements Initializable, EntityEventHandler<com.cuong.models.List> {
+public class ListsManagerController
+		implements Initializable, EntityEventHandler<com.cuong.models.List>, ListTableViewEventListener {
 
 	private static final Logger LOGGER = Logger.getLogger(ListsManagerController.class.getName());
 
 	private ListService listService = new ListServiceImpl();
 
-	private void setupTableView() {
-		idColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.ID));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.NAME));
-		createdAtColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.CREATED_AT));
-		numberOfWordsColumn.setCellValueFactory(new PropertyValueFactory<>(C.ViewModelProperty.List.NUMBER_OF_WORDS));
-		tableView.setRowFactory(
-				new Callback<TableView<com.cuong.viewmodels.List>, TableRow<com.cuong.viewmodels.List>>() {
+	private ListTableViewController listTableViewController;
 
-					@Override
-					public TableRow<com.cuong.viewmodels.List> call(TableView<com.cuong.viewmodels.List> param) {
-						TableRow<com.cuong.viewmodels.List> tableRow = new TableRow<>();
-						tableRow.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-							@Override
-							public void handle(MouseEvent event) {
-								if (event.getClickCount() == 2) {
-									com.cuong.viewmodels.List list = tableRow.getItem();
-									showListDetail(list);
-								}
-							}
-						});
-						return tableRow;
-					}
-				});
+	private void initTableViewController() {
+		try {
+			listTableViewController = new ListTableViewController();
+			listTableViewController.setListTableViewEventListener(this);
+			FXMLLoader loader = new FXMLLoader(PathUtils.getViewFile(C.View.LIST_TABLE_VIEW));
+			loader.setController(listTableViewController);
+			TableView<com.cuong.viewmodels.List> tableView = loader.load();
+			borderPane.setCenter(tableView);
+		} catch (IOException e) {
+			LOGGER.severe(e.getMessage());
+		}
 	}
 
 	private void setupEvents() {
-		menuItemImportFile.setOnAction(new EventHandler<ActionEvent>() {
+		importFileMenuItem.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				importFile();
 			}
 		});
 
-		deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				deleteSelectedLists();
-			}
-		});
-
-		addButton.setOnAction(new EventHandler<ActionEvent>() {
+		addNewListMenuItem.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 
@@ -102,7 +78,7 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 		});
 	}
 
-	private void showListDetail(com.cuong.viewmodels.List list) {
+	private void showWords(com.cuong.viewmodels.List list) {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LIST_MANAGER));
 			ListManagerController listManagerController = new ListManagerController();
@@ -110,31 +86,11 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 			fxmlLoader.setController(listManagerController);
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
-			stage.setScene(new Scene(root));
+			stage.setScene(new Scene(root, 1000, 800));
 			stage.setTitle(list.getName());
 			stage.show();
 		} catch (IOException e) {
 			LOGGER.severe(e.getMessage());
-		}
-	}
-
-	private void deleteSelectedLists() {
-		ObservableList<com.cuong.viewmodels.List> selectedItems = tableView.getSelectionModel().getSelectedItems();
-		if (selectedItems != null) {
-			for (com.cuong.viewmodels.List list : selectedItems) {
-				listService.deleteCascade(list.getId(), new OnComplete<com.cuong.models.List>() {
-
-					@Override
-					public void onSuccess(com.cuong.models.List object) {
-						LOGGER.info("Deleted list: " + object.getName());
-					}
-
-					@Override
-					public void onError(String error) {
-						LOGGER.severe("Cannot delete list: " + error);
-					}
-				});
-			}
 		}
 	}
 
@@ -152,33 +108,18 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 	}
 
 	@FXML
-	private TableView<com.cuong.viewmodels.List> tableView;
+	private BorderPane borderPane;
 
 	@FXML
-	private TableColumn<com.cuong.viewmodels.List, String> idColumn;
+	private MenuItem importFileMenuItem;
 
 	@FXML
-	private TableColumn<com.cuong.viewmodels.List, String> nameColumn;
-
-	@FXML
-	private TableColumn<com.cuong.viewmodels.List, Date> createdAtColumn;
-
-	@FXML
-	private TableColumn<com.cuong.viewmodels.List, Long> numberOfWordsColumn;
-
-	@FXML
-	private MenuItem menuItemImportFile;
-
-	@FXML
-	private Button deleteButton;
-
-	@FXML
-	private Button addButton;
+	private MenuItem addNewListMenuItem;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// setup tables
-		setupTableView();
+		// init tables
+		initTableViewController();
 
 		// setup events
 		setupEvents();
@@ -194,7 +135,7 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				tableView.getItems().add(listViewModel);
+				listTableViewController.addItem(listViewModel);
 			}
 		});
 	}
@@ -202,31 +143,46 @@ public class ListsManagerController implements Initializable, EntityEventHandler
 	@Override
 	public void onEntityChanged(com.cuong.models.List list) {
 		LOGGER.info("Changed list item");
+		com.cuong.viewmodels.List viewModelList = ListConverter.getViewModel(list);
+		listTableViewController.update(viewModelList);
 	}
 
 	@Override
 	public void onEntityRemoved(com.cuong.models.List list) {
 		LOGGER.info("Removed list item");
-		for (com.cuong.viewmodels.List currentList : tableView.getItems()) {
-			if (currentList.getId().equals(list.getId())) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						tableView.getItems().remove(currentList);
-					}
-				});
-			}
-		}
+		listTableViewController.removeItem(list.getId());
 	}
 
 	@Override
 	public void onEntityMoved(com.cuong.models.List list) {
 		LOGGER.info("Moved list item");
+		listTableViewController.refresh();
 	}
 
 	@Override
 	public void onEntityCancelled(String error) {
 		LOGGER.info("Cancelled list item");
+		listTableViewController.refresh();
+	}
+
+	@Override
+	public void onNameEditCommit(com.cuong.viewmodels.List list, String oldValue, String newValue) {
+		LOGGER.info("List ID: " + list.getId());
+		LOGGER.info("Old Value: " + oldValue);
+		LOGGER.info("New Value: " + newValue);
+		listService.updateName(list.getId(), newValue, null);
+	}
+
+	@Override
+	public void onShowWordsButtonClicked(com.cuong.viewmodels.List list) {
+		LOGGER.info("List ID: " + list.getId());
+		showWords(list);
+	}
+
+	@Override
+	public void onDeleteButtonClicked(com.cuong.viewmodels.List list) {
+		LOGGER.info("List ID: " + list.getId());
+		listService.deleteCascade(list.getId(), null);
 	}
 
 }
