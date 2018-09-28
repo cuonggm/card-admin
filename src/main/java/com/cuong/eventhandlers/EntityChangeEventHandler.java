@@ -2,7 +2,7 @@ package com.cuong.eventhandlers;
 
 public interface EntityChangeEventHandler<T> {
 
-	void onEntityChange(T entity);
+	void onEntityChange(String id, T entity);
 
 	void onCancelled(String error);
 

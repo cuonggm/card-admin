@@ -8,6 +8,7 @@ public class C {
 		public static final String ADD_NEW_LIST = "AddNewList.fxml";
 		public static final String LIST_MANAGER = "ListManager.fxml";
 		public static final String LIST_TABLE_VIEW = "ListTableView.fxml";
+		public static final String WORD_TABLE_VIEW = "WordTableView.fxml";
 
 	}
 
@@ -16,6 +17,10 @@ public class C {
 		public static final String WORDS = "words";
 		public static final String LISTS = "lists";
 		public static final String APP_NAME = "appName";
+
+		public static class Lists {
+			public static final String WORD_IDs = "wordIDs";
+		}
 
 	}
 
@@ -47,6 +52,16 @@ public class C {
 			public static final String WORD_IDS = "wordIDs";
 		}
 
+		public static class Word {
+			public static final String ID = "id";
+			public static final String KANJI = "kanji";
+			public static final String HIRAGANA = "hiragana";
+			public static final String MEANING = "meaning";
+			public static final String AM_HAN_VIET = "amHanViet";
+			public static final String CREATED_AT = "createdAt";
+			public static final String UPDATED_AT = "updatedAt";
+		}
+
 	}
 
 	public static class ViewModelProperty {
@@ -57,6 +72,16 @@ public class C {
 			public static final String CREATED_AT = "createdAt";
 			public static final String UPDATED_AT = "updatedAt";
 			public static final String NUMBER_OF_WORDS = "numberOfWords";
+		}
+
+		public static class Word {
+			public static final String ID = "id";
+			public static final String KANJI = "kanji";
+			public static final String HIRAGANA = "hiragana";
+			public static final String MEANING = "meaning";
+			public static final String AM_HAN_VIET = "amHanViet";
+			public static final String CREATED_AT = "createdAt";
+			public static final String UPDATED_AT = "updatedAt";
 		}
 
 	}

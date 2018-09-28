@@ -30,7 +30,7 @@ public class App extends Application {
 		LOGGER.info("Init Firebase");
 		initFirebase();
 		FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LISTS_MANAGER));
-		ListsManagerController listManagerController = new ListsManagerController();
+		ListsManagerController listManagerController = new ListsManagerController(primaryStage);
 		fxmlLoader.setController(listManagerController);
 		Parent root = fxmlLoader.load();
 		primaryStage.setScene(new Scene(root));

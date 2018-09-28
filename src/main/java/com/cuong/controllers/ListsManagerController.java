@@ -27,15 +27,22 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class ListsManagerController
 		implements Initializable, EntityEventHandler<com.cuong.models.List>, ListTableViewEventListener {
 
 	private static final Logger LOGGER = Logger.getLogger(ListsManagerController.class.getName());
 
+	private Stage stage;
+
 	private ListService listService = new ListServiceImpl();
 
 	private ListTableViewController listTableViewController;
+
+	public ListsManagerController(Stage stage) {
+		this.stage = stage;
+	}
 
 	private void initTableViewController() {
 		try {
@@ -80,13 +87,13 @@ public class ListsManagerController
 
 	private void showWords(com.cuong.viewmodels.List list) {
 		try {
+			Stage stage = new Stage();
 			FXMLLoader fxmlLoader = new FXMLLoader(PathUtils.getViewFile(C.View.LIST_MANAGER));
-			ListManagerController listManagerController = new ListManagerController();
+			ListManagerController listManagerController = new ListManagerController(stage);
 			listManagerController.setListId(list.getId());
 			fxmlLoader.setController(listManagerController);
 			Parent root = fxmlLoader.load();
-			Stage stage = new Stage();
-			stage.setScene(new Scene(root, 1000, 800));
+			stage.setScene(new Scene(root, 1300, 800));
 			stage.setTitle(list.getName());
 			stage.show();
 		} catch (IOException e) {
@@ -126,6 +133,13 @@ public class ListsManagerController
 
 		// bind data to UI
 		listService.listenAll(this);
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+			@Override
+			public void handle(WindowEvent event) {
+				listService.removeListenAll();
+			}
+		});
 	}
 
 	@Override
@@ -183,6 +197,12 @@ public class ListsManagerController
 	public void onDeleteButtonClicked(com.cuong.viewmodels.List list) {
 		LOGGER.info("List ID: " + list.getId());
 		listService.deleteCascade(list.getId(), null);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		listService.removeListenAll();
 	}
 
 }

@@ -1,25 +1,21 @@
-package com.cuong.models;
+package com.cuong.viewmodels;
 
-public class Word implements BaseManageable<Word> {
+import java.util.Date;
+
+public class Word implements com.cuong.models.Cloneable<Word> {
 
 	private String id;
 	private String kanji;
 	private String hiragana;
 	private String meaning;
 	private String amHanViet;
-	private Long createdAt;
-	private Long updatedAt;
+	private Date createdAt;
+	private Date updatedAt;
 
-	public Word() {
-
-	}
-
-	@Override
 	public String getId() {
 		return id;
 	}
 
-	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -56,23 +52,19 @@ public class Word implements BaseManageable<Word> {
 		this.amHanViet = amHanViet;
 	}
 
-	@Override
-	public Long getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	@Override
-	public void setCreatedAt(Long createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	@Override
-	public Long getUpdatedAt() {
+	public Date getUpdatedAt() {
 		return updatedAt;
 	}
 
-	@Override
-	public void setUpdatedAt(Long updatedAt) {
+	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -85,11 +77,6 @@ public class Word implements BaseManageable<Word> {
 		destination.setAmHanViet(getAmHanViet());
 		destination.setCreatedAt(getCreatedAt());
 		destination.setUpdatedAt(getUpdatedAt());
-	}
-
-	@Override
-	public String toString() {
-		return getKanji() + "\n" + getHiragana() + "\n" + getMeaning() + "\n" + getAmHanViet();
 	}
 
 }

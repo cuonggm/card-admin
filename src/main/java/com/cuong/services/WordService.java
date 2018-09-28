@@ -1,8 +1,9 @@
-package com.cuong.daos;
+package com.cuong.services;
 
+import com.cuong.daos.OnComplete;
 import com.cuong.models.Word;
 
-public interface WordDAO extends BaseDAO<String, Word> {
+public interface WordService extends BaseService<String, Word> {
 
 	void updateKanji(String id, String kanji, OnComplete<Word> onComplete);
 

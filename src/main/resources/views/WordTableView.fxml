@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.TableView?>
+
+<TableView fx:id="tableView" prefHeight="800.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <columns>
+      <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+      <TableColumn fx:id="kanjiColumn" prefWidth="155.0" text="Kanji" />
+      <TableColumn fx:id="hiraganaColumn" prefWidth="176.0" text="Hiragana" />
+      <TableColumn fx:id="meaningColumn" prefWidth="189.0" text="Meaning" />
+      <TableColumn fx:id="amHanVietColumn" prefWidth="192.0" text="Am Han Viet" />
+      <TableColumn fx:id="createdAtColumn" prefWidth="211.0" text="Created At" />
+      <TableColumn fx:id="updatedAtColumn" prefWidth="201.0" text="Updated At" />
+      <TableColumn fx:id="deleteColumn" prefWidth="100.0" text="Delete" />
+   </columns>
+</TableView>

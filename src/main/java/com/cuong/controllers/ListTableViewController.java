@@ -93,13 +93,22 @@ public class ListTableViewController implements Initializable {
 		tableView.getItems().add(list);
 	}
 
-	public void update(List list) {
+	public boolean update(List list) {
 		for (List item : getTableView().getItems()) {
 			if (item.getId().equals(list.getId())) {
 				list.cloneTo(item);
+				tableView.refresh();
+				refresh();
+				return true;
 			}
 		}
-		tableView.refresh();
+		return false;
+	}
+
+	public void addOrUpdate(List list) {
+		if (!update(list)) {
+			addItem(list);
+		}
 	}
 
 	public void removeItem(String id) {

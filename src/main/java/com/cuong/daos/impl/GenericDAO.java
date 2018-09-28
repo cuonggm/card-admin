@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import com.cuong.daos.OnComplete;
 import com.cuong.eventhandlers.EntityChangeEventHandler;
 import com.cuong.eventhandlers.EntityEventHandler;
@@ -23,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public abstract class GenericDAO<ID, T extends BaseManageable<T>> {
 
+	protected static final Logger LOGGER = Logger.getLogger(GenericDAO.class.getName());
 	private static final String ROOT_KEY = "ROOT_KEY";
 
 	private Class<T> modelClass;
@@ -91,12 +94,13 @@ public abstract class GenericDAO<ID, T extends BaseManageable<T>> {
 	}
 
 	public void listen(String id, EntityChangeEventHandler<T> entityChangeEventHandler) {
+		removeListen(id);
 		ValueEventListener valueEventListener = new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
 				T entity = snapshot.getValue(getModelClass());
-				entityChangeEventHandler.onEntityChange(entity);
+				entityChangeEventHandler.onEntityChange(snapshot.getKey(), entity);
 			}
 
 			@Override
@@ -111,6 +115,7 @@ public abstract class GenericDAO<ID, T extends BaseManageable<T>> {
 	public void removeListen(String id) {
 		ValueEventListener valueEventListener = getValueEventListeners().get(id);
 		if (valueEventListener != null) {
+			LOGGER.info("REMOVE LISTEN ID: " + id);
 			getRootRef().child(id).removeEventListener(valueEventListener);
 		}
 	}
@@ -207,6 +212,7 @@ public abstract class GenericDAO<ID, T extends BaseManageable<T>> {
 				T currentEntity = currentData.getValue(getModelClass());
 				entity.setUpdatedAt(new Date().getTime());
 				entity.cloneTo(currentEntity);
+				currentData.setValue(currentEntity);
 				return Transaction.success(currentData);
 			}
 		});

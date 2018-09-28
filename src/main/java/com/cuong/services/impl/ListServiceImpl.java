@@ -57,7 +57,7 @@ public class ListServiceImpl extends GenericService<String, List> implements Lis
 					line = scanner.nextLine().trim();
 					word.setKanji(line);
 					line = scanner.nextLine().trim();
-					word.setHiragara(line);
+					word.setHiragana(line);
 					line = scanner.nextLine().trim();
 					word.setMeaning(line);
 					line = scanner.nextLine().trim();
